@@ -1,16 +1,22 @@
-import { useReducer } from "react";
-import "./App.css";
+import { useContext, useEffect, useReducer } from "react";
+import "./App.scss";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import ItemManage from "./pages/ItemManage";
 import OrderItemManage from "./pages/OrderItemManage";
-import { Item, UpdateItemListProps, DeleteItemListProps } from "./types";
+import Sidebar from "./components/Sidebar";
+import {
+  Item,
+  AddItemListProps,
+  UpdateItemListProps,
+  DeleteItemListProps,
+} from "./types";
 import { createContext } from "react";
 
-type Action =
+type ItemListAction =
   | {
       type: "CREATE";
-      data: Item;
+      data: AddItemListProps;
     }
   | {
       type: "UPDATE";
@@ -21,10 +27,22 @@ type Action =
       data: DeleteItemListProps;
     };
 
-function reducerItemList(state: Item[], action: Action) {
+function reducerItemList(state: Item[], action: ItemListAction) {
   switch (action.type) {
     case "CREATE": {
-      return [...state, action.data];
+      const isExist = state.findIndex((item) => item.id === action.data.id);
+      const updateList = [...state];
+      if (isExist !== -1) {
+        console.log(
+          "이미 존재하는 아이템의 개수 : ",
+          updateList[isExist].quantity
+        );
+        updateList[isExist].quantity =
+          Number(updateList[isExist].quantity) + Number(action.data.quantity);
+        return updateList;
+      } else {
+        return [...updateList, action.data];
+      }
     }
     case "UPDATE": {
       return [...state];
@@ -38,10 +56,24 @@ function reducerItemList(state: Item[], action: Action) {
 
 export const ItemListStateContext = createContext<Item[] | null>(null);
 export const ItemListDispatchContext = createContext<{
-  addItemList: (props: Item) => void;
-  updateItemList: (props: UpdateItemListProps) => void;
-  deleteItemList: (props: DeleteItemListProps) => void;
+  handleAddItemList: (props: AddItemListProps) => void;
+  handleUpdateItemList: (props: UpdateItemListProps) => void;
+  handleDeleteItemList: (props: DeleteItemListProps) => void;
 } | null>(null);
+
+export function useItemListDispatchContext() {
+  const dispatchItemList = useContext(ItemListDispatchContext);
+  if (!dispatchItemList)
+    throw new Error("ItemListDispatchContext에서 함수를 찾을 수 없습니다.");
+  return dispatchItemList;
+}
+
+export function useItemListStateContext() {
+  const stateItemList = useContext(ItemListStateContext);
+  if (!stateItemList)
+    throw new Error("ItemListStateContext에서 함수를 찾을 수 없습니다.");
+  return stateItemList;
+}
 
 // export const OrderItemListStateContext = createContext();
 // export const OrderItemListDispatchContext = createContext();
@@ -54,7 +86,7 @@ function App() {
   // );
 
   // dispatchItemList 정의
-  const addItemList = (props: Item) => {
+  const handleAddItemList = (props: AddItemListProps) => {
     dispatchItemList({
       type: "CREATE",
       data: {
@@ -63,12 +95,13 @@ function App() {
         barcode: props.barcode,
         location: props.location,
         quantity: props.quantity,
-        expiration_date: props.expiration_date,
+        expDate: props.expDate,
+        isChecked: props.isChecked,
       },
     });
   };
 
-  const updateItemList = (props: UpdateItemListProps) => {
+  const handleUpdateItemList = (props: UpdateItemListProps) => {
     dispatchItemList({
       type: "UPDATE",
       data: {
@@ -80,7 +113,7 @@ function App() {
     });
   };
 
-  const deleteItemList = (props: DeleteItemListProps) => {
+  const handleDeleteItemList = (props: DeleteItemListProps) => {
     dispatchItemList({
       type: "DELETE",
       data: {
@@ -90,16 +123,25 @@ function App() {
     });
   };
 
+  useEffect(() => {
+    console.log("ItemList : ", itemList);
+  }, [itemList]);
+
   return (
     <div className="App">
+      <Sidebar />
       <ItemListStateContext.Provider value={itemList}>
         <ItemListDispatchContext.Provider
-          value={{ addItemList, updateItemList, deleteItemList }}
+          value={{
+            handleAddItemList,
+            handleUpdateItemList,
+            handleDeleteItemList,
+          }}
         >
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/ItemManage" element={<ItemManage />} />
-            <Route path="/OrderItemManage" element={<OrderItemManage />} />
+            <Route path="/ItemManage/*" element={<ItemManage />} />
+            <Route path="/OrderItemManage/*" element={<OrderItemManage />} />
           </Routes>
         </ItemListDispatchContext.Provider>
       </ItemListStateContext.Provider>

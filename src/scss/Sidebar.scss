@@ -1,0 +1,117 @@
+// .SideBar {
+//   width: 300px;
+//   height: 100vh;
+//   position: fixed; /* Sidebar stays fixed on the left */
+//   top: 0;
+//   left: 0;
+//   background-color: #fff; /* Background color */
+//   border-right: 1px solid #e4e4e4; /* Add border to separate from main content */
+//   display: flex;
+//   flex-direction: column;
+//   padding: 20px;
+//   box-sizing: border-box;
+//   div {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 1px;
+//   }
+//   .SideBar-Main {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 1px;
+//     .active {
+//       background-color: black;
+//       color: white;
+//     }
+
+//     a {
+//       border-radius: 5px;
+//       text-decoration: none;
+//       align-content: center;
+//       height: 30px;
+//       padding: 3px;
+//       padding-left: 10px;
+//       color: black;
+//     }
+
+//     .SideBar-Drop {
+//       border-radius: 5px;
+//       .active {
+//         background-color: #f4f4f4;
+//         color: black;
+//       }
+//       :hover {
+//         background-color: #f4f4f4;
+//         color: black;
+//       }
+//     }
+//   }
+// }
+
+.SideBar {
+  width: 300px;
+  height: 100vh;
+  position: fixed; /* Sidebar stays fixed on the left */
+  top: 0;
+  left: 0;
+  background-color: #fff; /* Background color */
+  border-right: 1px solid #e4e4e4; /* Add border to separate from main content */
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .SideBar-Main {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+
+    .active {
+      background-color: black;
+      color: white;
+    }
+
+    a {
+      border-radius: 5px;
+      text-decoration: none;
+      align-content: center;
+      height: 30px;
+      padding: 3px;
+      padding-left: 10px;
+      color: black;
+      transition: background-color 0.5s ease; /* Add smooth background color transition */
+    }
+
+    .SideBar-Drop {
+      border-radius: 5px;
+      max-height: 0; /* Initialize dropdown to be hidden */
+      overflow: hidden; /* Hide the overflow content */
+      transition: max-height 0.5s ease; /* Smooth transition for dropdown */
+
+      &.open {
+        max-height: 500px; /* Adjust max-height as needed */
+      }
+
+      a {
+        padding-left: 20px; /* Indent dropdown items */
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      .active {
+        background-color: #f4f4f4;
+        color: black;
+      }
+
+      :hover {
+        background-color: #f4f4f4;
+        color: black;
+      }
+    }
+  }
+}

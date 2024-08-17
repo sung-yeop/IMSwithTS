@@ -2,13 +2,17 @@
 export interface Item {
   id: string;
   name: string;
-  barcode: number;
+  barcode: number | string;
   location: string;
-  quantity: number;
-  expiration_date: number; // 타임스탬프로 저장
+  quantity: number | string;
+  expDate: number | string; // 타임스탬프로 저장
 }
 
 // App.tsx - dispatchItemList에서 정의된 Props 타입 정리
+export interface AddItemListProps extends Item {
+  isChecked: boolean;
+}
+
 export interface UpdateItemListProps {
   id: string;
   currentLocation: string;
@@ -18,7 +22,7 @@ export interface UpdateItemListProps {
 
 export interface DeleteItemListProps {
   id: string;
-  quantity: number;
+  DeleteQuantity: number | string;
 }
 
 // OrderItem Info
