@@ -8,6 +8,7 @@ import {
   useItemManageStateContext,
 } from "../../pages/ItemManage";
 import { DeleteItemListProps } from "../../types";
+import { useRef } from "react";
 
 // 화면에 렌더링되는 아이템이 너무 많을 수 있으므로 map 메서드를 이용한 순회보다는 삭제하고자 하는 아이템을 저장하는 배열을 생성
 // 이후, 배열에 담긴 Id의 값을 모두 삭제
@@ -15,6 +16,7 @@ const DeleteList = () => {
   const itemList = useItemListStateContext();
   const { setDeleteItemList } = useItemManageDispatchContext();
   const { deleteItemList } = useItemManageStateContext();
+  const deleteRef = useRef(false);
   const handleToggleCheckBox = (item: DeleteItemListProps) => {
     setDeleteItemList((prevList) => {
       const isExist = prevList.findIndex(
@@ -36,6 +38,8 @@ const DeleteList = () => {
     deleteItemList.map((item: DeleteItemListProps) =>
       handleDeleteItemList(item)
     );
+    setDeleteItemList([]);
+    deleteRef.current = !deleteRef.current;
   };
 
   return (
@@ -62,6 +66,7 @@ const DeleteList = () => {
                 index={index + 1}
                 item={item}
                 handleToggleCheckBox={handleToggleCheckBox}
+                deleteRef={deleteRef.current}
               />
             );
           })}

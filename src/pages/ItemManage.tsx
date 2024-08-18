@@ -60,6 +60,10 @@ const ItemManage = () => {
     console.log("deleteItemList 변경 감지 : ", deleteItemList);
   }, [deleteItemList]);
 
+  useEffect(() => {
+    console.log("UpdateItemList 변경 감지 : ", updateItemList);
+  }, [updateItemList]);
+
   return (
     <div className="ItemManage">
       <ItemManageStateContext.Provider

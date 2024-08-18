@@ -6,6 +6,7 @@ interface Props {
   index: number;
   item: Item;
   handleToggleCheckBox: (item: DeleteItemListProps) => void;
+  deleteRef: boolean;
 }
 
 const DeleteItemFormat = (props: Props) => {
@@ -43,6 +44,13 @@ const DeleteItemFormat = (props: Props) => {
     else setIsChecked(false);
     props.handleToggleCheckBox(deleteInfo);
   }, [deleteInfo]);
+
+  useEffect(() => {
+    setDeleteInfo({
+      id: "",
+      DeleteQuantity: "",
+    });
+  }, [props.deleteRef]);
 
   return (
     <tr>

@@ -45,18 +45,38 @@ function reducerItemList(state: Item[], action: ItemListAction) {
       }
     }
     case "UPDATE": {
-      return [...state];
+      const findIndex = state.findIndex((item) => item.id === action.data.id);
+      const updateList = [...state];
+      if (findIndex === -1)
+        throw new Error(
+          "재고에 존재하지 않는 아이템에 접근하였습니다. itemList와 update function을 확인해주세요"
+        );
+      updateList[findIndex].quantity =
+        Number(updateList[findIndex].quantity) -
+        Number(action.data.updateQuantity);
+      const newId = `${updateList[findIndex].barcode}-${action.data.updateLocation}-${updateList[findIndex].expDate}`;
+      console.log(newId);
+      return [
+        ...updateList,
+        {
+          ...updateList[findIndex],
+          id: newId,
+          location: action.data.updateLocation,
+          quantity: Number(action.data.updateQuantity),
+        },
+      ];
     }
     case "DELETE": {
+      console.log(action.data);
       const updateList = state.map((item: Item) => {
         if (
           item.id === action.data.id &&
-          item.quantity === action.data.DeleteQuantity
+          Number(item.quantity) === Number(action.data.DeleteQuantity)
         ) {
           return null;
         } else if (
           item.id === action.data.id &&
-          item.quantity > action.data.DeleteQuantity
+          Number(item.quantity) > Number(action.data.DeleteQuantity)
         ) {
           return {
             ...item,
