@@ -1,23 +1,20 @@
 import React from "react";
-import { useItemListStateContext } from "../../App";
+import { useItemListDispatchContext, useItemListStateContext } from "../../App";
 import Button from "../Button";
 import { Item } from "../../types";
 import DeleteItemFormat from "./DeleteItemFormat";
-import { useItemManageDispatchContext } from "../../pages/ItemManage";
+import {
+  useItemManageDispatchContext,
+  useItemManageStateContext,
+} from "../../pages/ItemManage";
 import { DeleteItemListProps } from "../../types";
 
 // 화면에 렌더링되는 아이템이 너무 많을 수 있으므로 map 메서드를 이용한 순회보다는 삭제하고자 하는 아이템을 저장하는 배열을 생성
 // 이후, 배열에 담긴 Id의 값을 모두 삭제
-
-// export interface DeleteItemListProps {
-//     id: string;
-//     totalQuantity : number;
-//     quantity: number;
-//   }
-
 const DeleteList = () => {
   const itemList = useItemListStateContext();
   const { setDeleteItemList } = useItemManageDispatchContext();
+  const { deleteItemList } = useItemManageStateContext();
   const handleToggleCheckBox = (item: DeleteItemListProps) => {
     setDeleteItemList((prevList) => {
       const isExist = prevList.findIndex(
@@ -33,9 +30,17 @@ const DeleteList = () => {
     });
   };
 
+  const { handleDeleteItemList } = useItemListDispatchContext();
+
+  const handleClickDeleteButton = () => {
+    deleteItemList.map((item: DeleteItemListProps) =>
+      handleDeleteItemList(item)
+    );
+  };
+
   return (
     <div className="DeleteItemList">
-      <Button text={"삭제"} onClickButton={() => {}} />
+      <Button text={"삭제"} onClickButton={handleClickDeleteButton} />
       <table>
         <thead>
           <tr>

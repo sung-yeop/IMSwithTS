@@ -48,7 +48,26 @@ function reducerItemList(state: Item[], action: ItemListAction) {
       return [...state];
     }
     case "DELETE": {
-      return [...state];
+      const updateList = state.map((item: Item) => {
+        if (
+          item.id === action.data.id &&
+          item.quantity === action.data.DeleteQuantity
+        ) {
+          return null;
+        } else if (
+          item.id === action.data.id &&
+          item.quantity > action.data.DeleteQuantity
+        ) {
+          return {
+            ...item,
+            quantity:
+              Number(item.quantity) - Number(action.data.DeleteQuantity),
+          };
+        } else {
+          return item;
+        }
+      });
+      return updateList.filter((item: Item | null) => item !== null);
     }
   }
 }
@@ -118,7 +137,7 @@ function App() {
       type: "DELETE",
       data: {
         id: props.id,
-        quantity: props.quantity,
+        DeleteQuantity: props.DeleteQuantity,
       },
     });
   };
